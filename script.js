@@ -2,20 +2,20 @@
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
 
-const getWidth = () => window.innerWidth - 4;
-const getHeight = () => window.innerHeight - 4;
+const getWidth = () => window.innerWidth;
+const getHeight = () => window.innerHeight;
 
 const setCanvasDimensions = () => {
    canvas.width = getWidth();
    canvas.height = getHeight();
 };
 
-const mousePosition = (event) => {
+const setMousePosition = (event) => {
    const x = event.clientX;
    const y = event.clientY;
 
-  mousePositionX = x - getWidth();
-  mousePositionY = y - getHeight();
+  mouseX = x - getWidth()/2;
+  mouseY = getHeight()/2 - y;
 };
 
 window.addEventListener('resize', () => {
@@ -25,21 +25,26 @@ window.addEventListener('resize', () => {
    food();
 });
 
-window.addEventListener('mousemove', mousePosition);
+window.addEventListener('mousemove', setMousePosition);
 
-const speed = () => {
+const curveSpeed = (mousePositionX, mousePositionY, maxSpeed) => {
+
+   return 
+};
+
+const straightSpeed = (mousePosition, maxSpeed) => {
+   if(mousePosition^2 < maxSpeed*10) return mousePosition^2 / 10;
+   else return maxSpeed;
+};
+
+const getSpeed = () => {
    const speed0 = 0;
+   const maxSpeed = 10;
 
-   if(mousePositionX < 1 && mousePositionY < 1) return speed0;
-   else if(mousePositionY < 1) {
-
-   }
-   else if(mousePositionY < 1) {
-
-   }
-   else {
-
-   }
+   if(Math.abs(mouseX) < 1 && Math.abs(mouseY) < 1) return speed0;
+   else if(Math.abs(mouseY) < 1) return straightSpeed(mouseX, maxSpeed);
+   else if(Math.abs(mouseX) < 1) return straightSpeed(mouseY, maxSpeed);
+   else return curveSpeed(mouseX, mouseY, maxSpeed);
 };
 
 const drawGridVertical = (gridSize) => {
@@ -96,8 +101,8 @@ const game = () => {
 
 let playerRadius = 20;
 
-let mousePositionX = 0;
-let mousePositionY = 0;
+let mouseX = 0;
+let mouseY = 0;
 
 setCanvasDimensions();
 grid();
