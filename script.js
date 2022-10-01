@@ -10,9 +10,13 @@ const setCanvasDimensions = () => {
    canvas.height = getHeight();
 };
 
-const playerPosition = (move) => {
-   
-}
+const mousePosition = (event) => {
+   const x = event.clientX;
+   const y = event.clientY;
+
+  mousePositionX = x - getWidth();
+  mousePositionY = y - getHeight();
+};
 
 window.addEventListener('resize', () => {
    setCanvasDimensions();
@@ -21,39 +25,67 @@ window.addEventListener('resize', () => {
    food();
 });
 
-window.addEventListener('mousemove', playerPosition);
+window.addEventListener('mousemove', mousePosition);
 
-drawGridVertical = (gridSize) => {
-   for(let i = 0 ; i < getWidth()/gridSize ; i++){
+const speed = () => {
+   const speed0 = 0;
+
+   if(mousePositionX < 1 && mousePositionY < 1) return speed0;
+   else if(mousePositionY < 1) {
+
+   }
+   else if(mousePositionY < 1) {
+
+   }
+   else {
+
+   }
+};
+
+const drawGridVertical = (gridSize) => {
+   for(let i = 0 ; i < getWidth()/gridSize ; i++) {
       ctx.fillRect(i*gridSize, 0, 1, getHeight())
    };
 };
 
-drawGridHorizontal = (gridSize) => {
-   for(let i = 0 ; i < getHeight()/gridSize ; i++){
+const drawGridHorizontal = (gridSize) => {
+   for(let i = 0 ; i < getHeight()/gridSize ; i++) {
       ctx.fillRect(0, i*gridSize, getWidth(), 1)
    };
 };
 
 
 const grid = () => {
-   gridSize = 50;
+   const gridSize = 50;
    ctx.fillStyle = 'lightgrey';
    drawGridVertical(gridSize);
    drawGridHorizontal(gridSize);
 };
 
 const player = () => {
-   ctx.fillStyle = 'blue';
-   ctx.ellipse(getWidth()/2-playerRadius, getHeight/2, playerRadius, playerRadius, 0, 0, 360);
+   ctx.fillStyle = 'lightblue';
+   ctx.arc(getWidth()/2, getHeight()/2, playerRadius, 0, 360);
+   ctx.fill();
+};
+
+const isEatable = () => {
+
+};
+
+const isCurrent = () => {
+
+};
+
+const drawFood = () => {
+
 };
 
 const food = () => {
-
+   drawFood();
 };
 
-Starterfood = () => {
-   food();
+const Starterfood = () => {
+   drawFood();
 };
 
 const game = () => {
@@ -62,7 +94,10 @@ const game = () => {
    food();
 };
 
-let playerRadius = 50;
+let playerRadius = 20;
+
+let mousePositionX = 0;
+let mousePositionY = 0;
 
 setCanvasDimensions();
 grid();
