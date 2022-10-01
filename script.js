@@ -38,17 +38,16 @@ const getSpeed = () => {
    else return maxSpeed/20;
 };
 
-const howMuch = (mouse) => {
+const shareOfSpeed = (mouse) => {
    if(mouseX == 0 && mouseY == 0) return 0;
    const share = Math.abs(mouse)/(Math.abs(mouseX) + Math.abs(mouseY));
-   console.log(share);
    return share;
-
 };
 
 const drawGridHorizontal = (gridSize) => {
-   const speed = howMuch(mouseX) * getSpeed();
-   moveX += speed;
+   const speed = shareOfSpeed(mouseX) * getSpeed();
+   if(mouseX > 0) moveX -= speed;
+   else moveX += speed;
 
    for(let i = 0 ; i < getWidth()/gridSize ; i++) {
       const x = i*gridSize + moveX
@@ -64,8 +63,9 @@ const drawGridHorizontal = (gridSize) => {
 };
 
 const drawGridVertical = (gridSize) => { 
-   const speed = howMuch(mouseY) * getSpeed();
-   moveY += speed;
+   const speed = shareOfSpeed(mouseY) * getSpeed();
+   if(mouseY > 0 ) moveY += speed;
+   else moveY -= speed;
 
    for(let i = 0 ; i < getHeight()/gridSize ; i++) {
       const y = i*gridSize + moveY
@@ -78,7 +78,6 @@ const drawGridVertical = (gridSize) => {
          ctx.fillRect(0, y - gridSize, getWidth(), 1)
       };
    };
-  
 };
 
 const grid = () => {
@@ -126,10 +125,10 @@ const game = () => {
 let playerRadius = 20;
 
 let mouseX = 0;
-let moveX = 20;
+let moveX = 30;
 
 let mouseY = 0;
-let moveY = 20;
+let moveY = 50;
 
 setCanvasDimensions();
 grid();
