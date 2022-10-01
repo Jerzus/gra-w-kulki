@@ -13,6 +13,7 @@ const setCanvasDimensions = () => {
 const setMousePosition = (event) => {
    const x = event.clientX;
    const y = event.clientY;
+   console.log(event);
 
   mouseX = x - getWidth()/2;
   mouseY = getHeight()/2 - y;
@@ -27,27 +28,23 @@ window.addEventListener('resize', () => {
 
 window.addEventListener('mousemove', setMousePosition);
 
-const curveSpeed = (mousePositionX, mousePositionY, maxSpeed) => {
-
-   return 
-};
-
-const straightSpeed = (mousePosition, maxSpeed) => {
-   if(mousePosition^2 < maxSpeed*10) return mousePosition^2 / 10;
-   else return maxSpeed;
-};
-
 const getSpeed = () => {
    const speed0 = 0;
-   const maxSpeed = 10;
+   const minSpeed = 20;
+   const maxSpeed = 200;
+   const speed = Math.sqrt(mouseX*mouseX + mouseY*mouseY);
 
-   if(Math.abs(mouseX) < 1 && Math.abs(mouseY) < 1) return speed0;
-   else if(Math.abs(mouseY) < 1) return straightSpeed(mouseX, maxSpeed);
-   else if(Math.abs(mouseX) < 1) return straightSpeed(mouseY, maxSpeed);
-   else return curveSpeed(mouseX, mouseY, maxSpeed);
+   if(speed < minSpeed) return speed0;
+   else if(speed < maxSpeed) return speed/20;
+   else return maxSpeed/20;
 };
 
-const drawGridVertical = (gridSize) => {
+const howMuch = (mouse) => {
+   const sum = mouseX + mouseY;
+   return mouse/sum;
+};
+
+const drawGridVertical = (gridSize,) => {
    for(let i = 0 ; i < getWidth()/gridSize ; i++) {
       ctx.fillRect(i*gridSize, 0, 1, getHeight())
    };
@@ -59,8 +56,10 @@ const drawGridHorizontal = (gridSize) => {
    };
 };
 
-
 const grid = () => {
+   ctx.fillStyle = 'white';
+   ctx.fillRect(0, 0, getWidth(), getHeight());
+
    const gridSize = 50;
    ctx.fillStyle = 'lightgrey';
    drawGridVertical(gridSize);
@@ -97,6 +96,7 @@ const game = () => {
    grid();
    player();
    food();
+   //console.log(getSpeed());
 };
 
 let playerRadius = 20;
