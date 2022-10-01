@@ -13,10 +13,9 @@ const setCanvasDimensions = () => {
 const setMousePosition = (event) => {
    const x = event.clientX;
    const y = event.clientY;
-   console.log(event);
 
-  mouseX = x - getWidth()/2;
-  mouseY = getHeight()/2 - y;
+   mouseX = x - getWidth()/2;
+   mouseY = getHeight()/2 - y;
 };
 
 window.addEventListener('resize', () => {
@@ -40,27 +39,53 @@ const getSpeed = () => {
 };
 
 const howMuch = (mouse) => {
-   const sum = mouseX + mouseY;
-   return mouse/sum;
-};
+   if(mouseX == 0 && mouseY == 0) return 0;
+   const share = Math.abs(mouse)/(Math.abs(mouseX) + Math.abs(mouseY));
+   console.log(share);
+   return share;
 
-const drawGridVertical = (gridSize,) => {
-   for(let i = 0 ; i < getWidth()/gridSize ; i++) {
-      ctx.fillRect(i*gridSize, 0, 1, getHeight())
-   };
 };
 
 const drawGridHorizontal = (gridSize) => {
-   for(let i = 0 ; i < getHeight()/gridSize ; i++) {
-      ctx.fillRect(0, i*gridSize, getWidth(), 1)
+   const speed = howMuch(mouseX) * getSpeed();
+   moveX += speed;
+
+   for(let i = 0 ; i < getWidth()/gridSize ; i++) {
+      const x = i*gridSize + moveX
+
+      if(moveX < gridSize) {
+         ctx.fillRect(x, 0, 1, getHeight())
+      }
+      else {
+         moveX -= gridSize;
+         ctx.fillRect(x - gridSize, 0, 1, getHeight())
+      };
    };
+};
+
+const drawGridVertical = (gridSize) => { 
+   const speed = howMuch(mouseY) * getSpeed();
+   moveY += speed;
+
+   for(let i = 0 ; i < getHeight()/gridSize ; i++) {
+      const y = i*gridSize + moveY
+
+      if(moveY < gridSize) {
+         ctx.fillRect(0, y, getWidth(), 1);
+      }
+      else {
+         moveY -= gridSize;
+         ctx.fillRect(0, y - gridSize, getWidth(), 1)
+      };
+   };
+  
 };
 
 const grid = () => {
    ctx.fillStyle = 'white';
    ctx.fillRect(0, 0, getWidth(), getHeight());
 
-   const gridSize = 50;
+   const gridSize = 70;
    ctx.fillStyle = 'lightgrey';
    drawGridVertical(gridSize);
    drawGridHorizontal(gridSize);
@@ -96,13 +121,15 @@ const game = () => {
    grid();
    player();
    food();
-   //console.log(getSpeed());
 };
 
 let playerRadius = 20;
 
 let mouseX = 0;
+let moveX = 20;
+
 let mouseY = 0;
+let moveY = 20;
 
 setCanvasDimensions();
 grid();
