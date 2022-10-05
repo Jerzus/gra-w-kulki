@@ -31,7 +31,7 @@ const getSpeed = () => {
    const speed0 = 0;
    const minSpeed = 20;
    const maxSpeed = 200;
-   const speed = C(mouseX*mouseX + mouseY*mouseY);
+   const speed = Math.sqrt(mouseX*mouseX + mouseY*mouseY);
 
    if(speed < minSpeed) return speed0;
    else if(speed < maxSpeed) return speed/20;
@@ -180,7 +180,7 @@ drawFood();
 const game = () => {
    grid();
    player();
-   food();
+   //food();
 };
 
 let playerRadius = 20;
@@ -196,7 +196,8 @@ const foodCoords = [];
 setCanvasDimensions();
 grid();
 player();
-starterPackFood();
-drawFood();
+//starterPackFood();
+//drawFood();
+
 
 setInterval(game, 1000/60)
