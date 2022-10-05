@@ -31,7 +31,7 @@ const getSpeed = () => {
    const speed0 = 0;
    const minSpeed = 20;
    const maxSpeed = 200;
-   const speed = Math.sqrt(mouseX*mouseX + mouseY*mouseY);
+   const speed = C(mouseX*mouseX + mouseY*mouseY);
 
    if(speed < minSpeed) return speed0;
    else if(speed < maxSpeed) return speed/20;
@@ -115,50 +115,72 @@ const rand = (min, max) => {
    return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
-const isEatable = () => {
-
+const isEatable = (i) => {
+   const x = getWidth()/2 - foodCoords[i][0];
+   const y = getHeight()/2 - foodCoords[i][1];
+   const distance = Math.sqrt(Math.pow(x) + Math.pow(y));
+   if(distance < playerRadius + 5) return(true);
+   else return(false);
 };
 
-const isSolo = () => {
-
+const isOnCanvas = (i) => {
+   const x = foodCoords[i][0];
+   const y = foodCoords[i][1];
+   if(x - 5 < 0 || x + 5 > getWidth || y - 5 < 0 || y + 5 > getHeight()) return(false);
+   else return(true);
 };
 
-const isOnCanvas = () => {
-
+const addFood = (i) => {
+   while(isOnCanvas(i) == 0 && isEatable(i) == 1) {
+      foodCoords[i][0] = rand(0, getWidth);
+      foodCoords[i][1] = rand(0, getHeight);
+   }
 };
 
-const continueFood = () => {
-   for(let i = 0; i < maxFoodAmount; i++) {
-      if(isEatable(i)) {
-
-      };
-      if(isOnCanvas(i)) {
-
+const checkFood = () => {
+   for(let i = 0 ; i <= foodCoords.length ; i++) {
+      if(isEatable(i) == 1) {
+         addFood(i);
+         playerRadius++;
+      }
+      else if(isOnCanvas(i) == 0) {
+         addFood(i);
       };
    };
-
-
-   drawFood();
 };
 
-const startFood = () => {
-   for(let i = 0; i < maxFoodAmount; i++) {
-      while(isOnCanvas(i) == 0 && isSolo(i) == 0 && isEatable(ir) == 1) {
-         foodCoord[i][0] = rand(0, getWidth);
-         foodCoord[i][1] = rand(0, getHeight);
-      };
+const moveFood = () => {
+   const speedX = shareOfSpeed(mouseX) * getSpeed();
+   const speedY = shareOfSpeed(mouseY) * getSpeed();
+   for(let i = 0 ; i <= foodCoords.length ; i++) {
+      foodCoords[i][0] += speedX;
+      foodCoords[i][1] += speedY;
    };
-   drawFood();
+};
+
+const starterPackFood = () => {
+   const maxFoodAmount = 20;
+   for(let i = 0; i < maxFoodAmount; i++) {
+      addFood(i);
+   };
 };
 
 const drawFood = () => {
+   for(let i = 0 ; i <= foodCoords.length ; i++) {
 
+   };
+};
+
+const food = () => {
+moveFood();
+checkFood();
+drawFood();
 };
 
 const game = () => {
    grid();
    player();
-   continueFood();
+   food();
 };
 
 let playerRadius = 20;
@@ -169,13 +191,12 @@ let moveX = 30;
 let mouseY = 0;
 let moveY = 50;
 
-const foodCoord = [];
-
-const maxFoodAmount = 20;
+const foodCoords = [];
 
 setCanvasDimensions();
 grid();
 player();
-startFood();
+starterPackFood();
+drawFood();
 
 setInterval(game, 1000/60)
