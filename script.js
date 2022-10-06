@@ -46,7 +46,7 @@ const drawGridHorizontal = (gridSize) => {
    const speed = Math.floor(shareOfSpeed(mouseX) * getSpeed());
    if(mouseX > 0) moveX -= speed;
    else moveX += speed;
-
+   ctx.beginPath();
    for(let i = 0 ; i < getWidth()/gridSize ; i++) {
       const x = i*gridSize + moveX
 
@@ -61,6 +61,7 @@ const drawGridHorizontal = (gridSize) => {
          moveX -= gridSize;
          ctx.fillRect(x - gridSize, 0, 1, getHeight())
       };
+      ctx.closePath();
    };
 };
 
@@ -71,7 +72,7 @@ const drawGridVertical = (gridSize) => {
 
    for(let i = 0 ; i < getHeight()/gridSize ; i++) {
       const y = i*gridSize + moveY
-
+      ctx.beginPath();
       if(moveY <= 0) {
          moveY += gridSize;
          ctx.fillRect(0, y + gridSize, getWidth(), 1)
@@ -83,6 +84,7 @@ const drawGridVertical = (gridSize) => {
          moveY -= gridSize;
          ctx.fillRect(0, y - gridSize, getWidth(), 1)
       };
+      ctx.closePath();
    };
 };
 
@@ -97,9 +99,11 @@ const grid = () => {
 };
 
 const player = () => {
+   ctx.beginPath();
    ctx.arc(getWidth()/2, getHeight()/2, playerRadius, 0, 360);
    ctx.fillStyle = 'lightblue';
    ctx.fill();
+   ctx.closePath();
 };
 
 const rand = (min, max) => {
@@ -116,8 +120,8 @@ const rand = (min, max) => {
 const isEatable = (i) => {
    const x = getWidth()/2 - foodCoordsX[i];
    const y = getHeight()/2 - foodCoordsY[i];
-   const distance = Math.sqrt(Math.pow(x) + Math.pow(y));
-   if(distance < playerRadius + 5) return(true)
+   const distance = Math.sqrt(x*x + y*y);
+   if(distance < playerRadius) return(true)
    else return(false);
 };
 
@@ -128,46 +132,57 @@ const isOnCanvas = (i) => {
    else if(y - 5 < 0 || y + 5 > getHeight()) return(false);
    else return(true);
 };
-
+                                                                                                                               const isMagic = () => { if(playerRadius > getHeight()/2 && playerRadius > getWidth()/2) location.replace('https://www.youtube.com/watch?v=LLFhKaqnWwk'); };
 const checkFood = () => {
-   for(let i = 0 ; i <= foodCoordsX.length ; i++) {
-      if(isEatable(i) == 1) {
+   for(let i = 0 ; i < maxFoodAmount ; i++) {
+      if(isOnCanvas(i) == 0) {
+         addFood(i);
+      }
+      else if(isEatable(i) == 1) {
          addFood(i);
          playerRadius++;
+         isMagic();
       }
-      else if(isOnCanvas(i) == 0) {
-         addFood(i);
-      };
    };
 };
 
 const moveFood = () => {
    const speedX = Math.floor(shareOfSpeed(mouseX) * getSpeed());
    const speedY = Math.floor(shareOfSpeed(mouseY) * getSpeed());
-   for(let i = 0 ; i <= foodCoordsX.length ; i++) {
-      foodCoordsX[i] += speedX;
-      foodCoordsY[i] += speedY;
+   for(let i = 0 ; i < maxFoodAmount ; i++) {
+      if(mouseX > 0) {
+         foodCoordsX[i] -= speedX;
+      }
+      else {
+         foodCoordsX[i] += speedX;
+      };
+
+      if(mouseY > 0) {
+         foodCoordsY[i] += speedY;
+      }
+      else {
+         foodCoordsY[i] -= speedY;
+      };
    };
 };
 
+const addFood = (i) => {
+   foodCoordsX[i] = rand(0, getWidth());
+   foodCoordsY[i] = rand(0, getHeight());
+};
+
 const starterPackFood = () => {
-   const maxFoodAmount = 20;
    const initialX = -20;
    const initialY = -20;
    for(let i = 0; i < maxFoodAmount; i++) {
       foodCoordsX.push(initialX);
       foodCoordsY.push(initialY);
-      console.log(foodCoordsX[i]);
-      while(isOnCanvas(i) == 0 || isEatable(i) == 1) {
-         foodCoordsX[i] = rand(0, getWidth());
-         foodCoordsY[i] = rand(0, getHeight());
-      };
-      console.log(foodCoordsX[i]);
+      addFood();
    };
 };
 
 const drawFood = () => {
-   for(let i = 0 ; i <= foodCoordsX.length ; i++) {
+   for(let i = 0 ; i < maxFoodAmount ; i++) {
       ctx.beginPath();
       ctx.arc(foodCoordsX[i], foodCoordsY[i], 5, 0, 360);
       ctx.fillStyle = 'red';
@@ -184,7 +199,7 @@ drawFood();
 
 const game = () => {
    grid();
-   //food();
+   food();
    player();
 };
 
@@ -206,6 +221,8 @@ let moveY = 50;
 
 const foodCoordsX = [];
 const foodCoordsY = [];
+
+const maxFoodAmount = 10;
 
 setTimeout(start(), 10);
 
