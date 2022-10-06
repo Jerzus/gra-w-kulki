@@ -168,9 +168,11 @@ const starterPackFood = () => {
 
 const drawFood = () => {
    for(let i = 0 ; i <= foodCoordsX.length ; i++) {
+      ctx.beginPath();
       ctx.arc(foodCoordsX[i], foodCoordsY[i], 5, 0, 360);
       ctx.fillStyle = 'red';
       ctx.fill();
+      ctx.closePath();
    };
 };
 
