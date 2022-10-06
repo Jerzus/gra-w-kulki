@@ -20,9 +20,7 @@ const setMousePosition = (event) => {
 
 window.addEventListener('resize', () => {
    setCanvasDimensions();
-   grid();
-   player();
-   food();
+   game();
 });
 
 window.addEventListener('mousemove', setMousePosition);
@@ -45,7 +43,7 @@ const shareOfSpeed = (mouse) => {
 };
 
 const drawGridHorizontal = (gridSize) => {
-   const speed = shareOfSpeed(mouseX) * getSpeed();
+   const speed = Math.floor(shareOfSpeed(mouseX) * getSpeed());
    if(mouseX > 0) moveX -= speed;
    else moveX += speed;
 
@@ -67,7 +65,7 @@ const drawGridHorizontal = (gridSize) => {
 };
 
 const drawGridVertical = (gridSize) => { 
-   const speed = shareOfSpeed(mouseY) * getSpeed();
+   const speed = Math.floor(shareOfSpeed(mouseY) * getSpeed());
    if(mouseY > 0 ) moveY += speed;
    else moveY -= speed;
 
@@ -99,8 +97,8 @@ const grid = () => {
 };
 
 const player = () => {
-   ctx.fillStyle = 'lightblue';
    ctx.arc(getWidth()/2, getHeight()/2, playerRadius, 0, 360);
+   ctx.fillStyle = 'lightblue';
    ctx.fill();
 };
 
@@ -116,29 +114,23 @@ const rand = (min, max) => {
 };
 
 const isEatable = (i) => {
-   const x = getWidth()/2 - foodCoords[i][0];
-   const y = getHeight()/2 - foodCoords[i][1];
+   const x = getWidth()/2 - foodCoordsX[i];
+   const y = getHeight()/2 - foodCoordsY[i];
    const distance = Math.sqrt(Math.pow(x) + Math.pow(y));
-   if(distance < playerRadius + 5) return(true);
+   if(distance < playerRadius + 5) return(true)
    else return(false);
 };
 
 const isOnCanvas = (i) => {
-   const x = foodCoords[i][0];
-   const y = foodCoords[i][1];
-   if(x - 5 < 0 || x + 5 > getWidth || y - 5 < 0 || y + 5 > getHeight()) return(false);
+   const x = foodCoordsX[i];
+   const y = foodCoordsY[i];
+   if(x - 5 < 0 || x + 5 > getWidth()) return(false);
+   else if(y - 5 < 0 || y + 5 > getHeight()) return(false);
    else return(true);
 };
 
-const addFood = (i) => {
-   while(isOnCanvas(i) == 0 && isEatable(i) == 1) {
-      foodCoords[i][0] = rand(0, getWidth);
-      foodCoords[i][1] = rand(0, getHeight);
-   }
-};
-
 const checkFood = () => {
-   for(let i = 0 ; i <= foodCoords.length ; i++) {
+   for(let i = 0 ; i <= foodCoordsX.length ; i++) {
       if(isEatable(i) == 1) {
          addFood(i);
          playerRadius++;
@@ -150,24 +142,35 @@ const checkFood = () => {
 };
 
 const moveFood = () => {
-   const speedX = shareOfSpeed(mouseX) * getSpeed();
-   const speedY = shareOfSpeed(mouseY) * getSpeed();
-   for(let i = 0 ; i <= foodCoords.length ; i++) {
-      foodCoords[i][0] += speedX;
-      foodCoords[i][1] += speedY;
+   const speedX = Math.floor(shareOfSpeed(mouseX) * getSpeed());
+   const speedY = Math.floor(shareOfSpeed(mouseY) * getSpeed());
+   for(let i = 0 ; i <= foodCoordsX.length ; i++) {
+      foodCoordsX[i] += speedX;
+      foodCoordsY[i] += speedY;
    };
 };
 
 const starterPackFood = () => {
    const maxFoodAmount = 20;
+   const initialX = -20;
+   const initialY = -20;
    for(let i = 0; i < maxFoodAmount; i++) {
-      addFood(i);
+      foodCoordsX.push(initialX);
+      foodCoordsY.push(initialY);
+      console.log(foodCoordsX[i]);
+      while(isOnCanvas(i) == 0 || isEatable(i) == 1) {
+         foodCoordsX[i] = rand(0, getWidth());
+         foodCoordsY[i] = rand(0, getHeight());
+      };
+      console.log(foodCoordsX[i]);
    };
 };
 
 const drawFood = () => {
-   for(let i = 0 ; i <= foodCoords.length ; i++) {
-
+   for(let i = 0 ; i <= foodCoordsX.length ; i++) {
+      ctx.arc(foodCoordsX[i], foodCoordsY[i], 5, 0, 360);
+      ctx.fillStyle = 'red';
+      ctx.fill();
    };
 };
 
@@ -179,8 +182,16 @@ drawFood();
 
 const game = () => {
    grid();
-   player();
    //food();
+   player();
+};
+
+const start = () => {
+   setCanvasDimensions();
+   grid();
+   starterPackFood();
+   drawFood();
+   player();
 };
 
 let playerRadius = 20;
@@ -191,13 +202,9 @@ let moveX = 30;
 let mouseY = 0;
 let moveY = 50;
 
-const foodCoords = [];
+const foodCoordsX = [];
+const foodCoordsY = [];
 
-setCanvasDimensions();
-grid();
-player();
-//starterPackFood();
-//drawFood();
+setTimeout(start(), 10);
 
-
-setInterval(game, 1000/60)
+setTimeout(setInterval(game, 1000/60), 1000);
