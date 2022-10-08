@@ -49,7 +49,7 @@ const drawGridHorizontal = (gridSize) => {
    for(let i = 0 ; i < getWidth()/gridSize ; i++) {
       const x = i*gridSize + moveX
 
-      if(moveX <= 0) {
+      if(moveX < 0) {
          moveX += gridSize;
          ctx.fillRect(x + gridSize, 0, 1, getHeight())
       }
@@ -72,7 +72,7 @@ const drawGridVertical = (gridSize) => {
    for(let i = 0 ; i < getHeight()/gridSize ; i++) {
       const y = i*gridSize + moveY
       ctx.beginPath();
-      if(moveY <= 0) {
+      if(moveY < 0) {
          moveY += gridSize;
          ctx.fillRect(0, y + gridSize, getWidth(), 1)
       }
