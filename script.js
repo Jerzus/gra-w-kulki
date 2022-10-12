@@ -108,19 +108,14 @@ const player = () => {
 const rand = (min, max) => {
    min = parseInt(min, 10);
    max = parseInt(max, 10);
-   if(min > max) {
-      let tmp = min;
-      min = max;
-      max = tmp;
-   };
    return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
 const isEatable = (i) => {
    const x = getWidth()/2 - foodCoordsX[i];
    const y = getHeight()/2 - foodCoordsY[i];
-   const distance = Math.sqrt(x*x + y*y);
-   if(distance < playerRadius) return(true)
+   const distance = x*x + y*y;
+   if(distance < Math.abs(playerRadius)) return(true)
    else return(false);
 };
 
@@ -128,10 +123,12 @@ const isOnCanvas = (i) => {
    const x = foodCoordsX[i];
    const y = foodCoordsY[i];
    if(x - 5 < 0 || x + 5 > getWidth()) return(false);
-   else if(y - 5 < 0 || y + 5 > getHeight()) return(false);
+   if (y - 5 < 0 || y + 5 > getHeight()) return(false);
    else return(true);
 };
-                                                                                                                               const isMagic = () => { if(playerRadius > getHeight()/2 && playerRadius > getWidth()/2) location.replace('https://www.youtube.com/watch?v=LLFhKaqnWwk'); };
+
+const isMagic = () => { if(playerRadius > getHeight()/2 && playerRadius > getWidth()/2) location.replace('https://www.youtube.com/watch?v=LLFhKaqnWwk'); };
+
 const checkFood = () => {
    for(let i = 0 ; i < maxFoodAmount ; i++) {
       if(isOnCanvas(i) == 0) {
