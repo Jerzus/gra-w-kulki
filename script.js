@@ -127,6 +127,7 @@ const isOnCanvas = (i) => {
    else return(true);
 };
 
+
 const isMagic = () => { if(playerRadius > getHeight()/2 && playerRadius > getWidth()/2) location.replace('https://www.youtube.com/watch?v=LLFhKaqnWwk'); };
 
 const checkFood = () => {
@@ -143,17 +144,17 @@ const checkFood = () => {
 };
 
 const moveFood = () => {
-   const speedX = Math.floor(shareOfSpeed(mouseX) * getSpeed());
-   const speedY = Math.floor(shareOfSpeed(mouseY) * getSpeed());
+   const speedX = Math.floor(shareOfSpeed(mousePosition.mouseX) * getSpeed());
+   const speedY = Math.floor(shareOfSpeed(mousePosition.mouseY) * getSpeed());
    for(let i = 0 ; i < maxFoodAmount ; i++) {
-      if(mouseX > 0) {
+      if(mousePosition.mouseX > 0) {
          foodCoordsX[i] -= speedX;
       }
       else {
          foodCoordsX[i] += speedX;
       };
 
-      if(mouseY > 0) {
+      if(mousePosition.mouseY > 0) {
          foodCoordsY[i] += speedY;
       }
       else {
@@ -209,11 +210,13 @@ const start = () => {
 
 let playerRadius = 20;
 
-let mouseX = 0;
-let moveX = 30;
+let mouseposition = {
+   mouseX : 30,
+   moveX : 0,
 
-let mouseY = 0;
-let moveY = 50;
+   mouseY : 50,
+   moveY : 0,
+}
 
 const foodCoordsX = [];
 const foodCoordsY = [];
